@@ -1,15 +1,19 @@
 import cv2
 import datetime
 import os
+import time
 
-folder_name = "motion_images"
-if not os.path.exists(folder_name):
-    os.makedirs(folder_name)
+images_folder = "motion_images"
+videos_folder = "motion_videos"
+os.makedirs(images_folder, exist_ok=True)
+os.makedirs(videos_folder, exist_ok=True)
 
 cap = cv2.VideoCapture(0)
 
 ret, frame1 = cap.read()
 ret, frame2 = cap.read()
+
+last_record_time = 0
 
 while cap.isOpened():
     diff = cv2.absdiff(frame1, frame2)
@@ -19,14 +23,34 @@ while cap.isOpened():
     dilated = cv2.dilate(thresh, None, iterations=3)
     contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
+    motion_detected = False
     for contour in contours:
         if cv2.contourArea(contour) < 2000:
             continue
         x, y, w, h = cv2.boundingRect(contour)
         cv2.rectangle(frame1, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        motion_detected = True
+
+    if motion_detected and (time.time() - last_record_time > 10):
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        filename = os.path.join(folder_name, f"snapshot_{timestamp}.jpg")
-        cv2.imwrite(filename, frame1)
+        snapshot_file = os.path.join(images_folder, f"snapshot_{timestamp}.jpg")
+        cv2.imwrite(snapshot_file, frame1)
+
+        video_file = os.path.join(videos_folder, f"video_{timestamp}.avi")
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        out = cv2.VideoWriter(video_file, fourcc, 20.0, (frame1.shape[1], frame1.shape[0]))
+
+        start_time = time.time()
+        while time.time() - start_time < 10:
+            ret, frame = cap.read()
+            if not ret:
+                break
+            out.write(frame)
+            cv2.imshow("Recording...", frame)
+            if cv2.waitKey(10) == 27:
+                break
+        out.release()
+        last_record_time = time.time()
 
     cv2.imshow("Motion Detector", frame1)
 
