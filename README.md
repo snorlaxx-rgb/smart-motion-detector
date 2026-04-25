@@ -1,43 +1,62 @@
-# 🚨 Smart Motion Detection System (Python + OpenCV)
+# 🚀 Smart Motion Detection Surveillance System (Python + OpenCV)
 
-A real-time motion detection system built using Python and OpenCV.  
-It detects movement using a webcam, draws bounding boxes around moving objects, and automatically saves snapshots when motion is detected.
-
-
-## 📌 Features
-
-- 🎥 Real-time motion detection using webcam
-- 📦 Detects and highlights moving objects with bounding boxes
-- 🔇 Filters small noise using contour area threshold
-- 📸 Automatically saves snapshots when motion is detected
-- 🕒 Timestamped images for tracking events
-- 📁 Saves images in a separate folder (`motion_images`)
-- 🧠 Uses frame difference-based motion detection
+A real-time motion detection system using Python and OpenCV that detects movement from a webcam, classifies motion intensity, and automatically saves snapshots and videos when significant motion is detected.
 
 
-## 🛠️ Technologies Used
+## Features
+
+### 🧠 Core Features
+- Real-time motion detection using webcam
+- Frame differencing technique using OpenCV
+- Bounding boxes around moving objects
+- Noise filtering to ignore small movements
+
+### 📸 Smart Capture System
+- Automatically saves snapshots when motion is detected
+- Timestamp-based file naming
+- Organized folder structure for images and videos
+
+### 🎥 Intelligent Video Recording
+- Records video only when Medium or High motion is detected
+- 10-second automatic recording
+- Saves videos with timestamped filenames
+
+### 📊 Motion Analysis
+- Detects motion intensity levels:
+  - 🟢 Low
+  - 🟡 Medium
+  - 🔴 High
+- Displays intensity on live video feed
+
+### ⏱ Smart Cooldown System
+- Prevents repeated triggers using a 10-second cooldown timer
+
+
+## 🧰 Tech Stack
 
 - Python 3.x
-- OpenCV (`cv2`)
-- NumPy
-- os module
-- datetime module
+- OpenCV
+- datetime (built-in)
+- os (built-in)
+- time (built-in)
 
 
-## 🚀 How It Works
-
-1. Captures video from webcam
-2. Compares consecutive frames to detect changes
-3. Converts difference to grayscale
-4. Applies blur + thresholding to remove noise
-5. Detects contours of moving objects
-6. Draws bounding boxes around detected motion
-7. Saves snapshot with timestamp when motion is detected
-
+## 📁 Project Structure
+motion-detection-system/
+│
+├── motion_detector.py
+├── motion_images/
+│ ├── snapshot_2026-04-25_12-00-01.jpg
+│
+├── motion_videos/
+│ ├── video_2026-04-25_12-00-01.avi
+│
+└── README.md
 
 
 ## ⚙️ Installation
 
-### 1. Install dependencies
+### 1. Clone the repository
 ```bash
-pip install opencv-python numpy
+git clone https://github.com/your-username/motion-detection-system.git
+cd motion-detection-system
